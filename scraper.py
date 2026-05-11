@@ -68,6 +68,7 @@ with sync_playwright() as p:
             text = re.sub(r'<.*?>', ' ', article)
             text = re.sub(r'\s+', ' ', text)
 
+            # タイトル取得
             title_match = re.search(
                 r'title=\"([^\"]+)\"',
                 article
@@ -75,6 +76,7 @@ with sync_playwright() as p:
 
             title = title_match.group(1) if title_match else ""
 
+            # URL取得
             url_match = re.search(
                 r'href=\"([^\"]+)\"',
                 article
@@ -85,12 +87,14 @@ with sync_playwright() as p:
             if url.startswith("/"):
                 url = "https://finance.logmi.jp" + url
 
+            # 日付取得
             date_match = re.search(
                 r'(\d{4}/\d{1,2}/\d{1,2})',
                 text
             )
 
             if date_match:
+
                 date_str = date_match.group(1)
 
                 dt = datetime.strptime(
@@ -101,9 +105,11 @@ with sync_playwright() as p:
                 month = dt.strftime("%Y-%m")
 
             else:
+
                 date_str = ""
                 month = ""
 
+            # 証券コード取得
             code_match = re.search(
                 r'\((\d{4})\)',
                 text
@@ -111,14 +117,26 @@ with sync_playwright() as p:
 
             code = code_match.group(1) if code_match else ""
 
+            # 社名取得
+            company = ""
+
+            company_match = re.search(
+                r'([^\s]+株式会社)',
+                text
+            )
+
+            if company_match:
+                company = company_match.group(1)
+
+            # データ追加
             all_data.append({
-                "月": month,
                 "掲載日": date_str,
+                "月": month,
+                "社名": company,
                 "証券コード": code,
                 "タイトル": title,
                 "URL": url
             })
-
 
 # =========================
 # DataFrame
