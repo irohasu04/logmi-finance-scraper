@@ -65,7 +65,10 @@ with sync_playwright() as p:
 
         for article in articles:
 
+            # =========================
             # HTMLタグ除去
+            # =========================
+
             text = re.sub(r'<.*?>', ' ', article)
             text = re.sub(r'\s+', ' ', text).strip()
 
@@ -113,7 +116,7 @@ with sync_playwright() as p:
             # =========================
 
             code_match = re.search(
-                r'\((\d{4})\)',
+                r'\(\s*(\d{4})\s*\)',
                 text
             )
 
@@ -121,18 +124,18 @@ with sync_playwright() as p:
 
             # =========================
             # 社名取得
+            # 括弧の後〜最初の句読点まで
             # =========================
 
             company = ""
 
-            if "、" in text:
-                company = text.split("、")[0].strip()
+            company_match = re.search(
+                r'\(\s*\d{4}\s*\)\s*([^、]+)',
+                text
+            )
 
-            # =========================
-            # タイトル取得
-            # =========================
-
-            title = text
+            if company_match:
+                company = company_match.group(1).strip()
 
             # =========================
             # データ追加
@@ -143,7 +146,6 @@ with sync_playwright() as p:
                 "月": month,
                 "社名": company,
                 "証券コード": code,
-                "タイトル": title,
                 "URL": url
             })
 
