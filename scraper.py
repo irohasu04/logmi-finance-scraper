@@ -118,15 +118,10 @@ with sync_playwright() as p:
             code = code_match.group(1) if code_match else ""
 
             # 社名取得
-            company = ""
+company = ""
 
-            company_match = re.search(
-                r'([^\s]+株式会社)',
-                text
-            )
-
-            if company_match:
-                company = company_match.group(1)
+if "、" in title:
+    company = title.split("、")[0].strip()
 
             # データ追加
             all_data.append({
