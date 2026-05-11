@@ -119,7 +119,6 @@ with sync_playwright() as p:
                 "URL": url
             })
 
-browser.close()
 
 # =========================
 # DataFrame
