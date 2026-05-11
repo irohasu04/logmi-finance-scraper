@@ -63,75 +63,75 @@ with sync_playwright() as p:
             re.DOTALL
         )
 
-        for article in articles:
+for article in articles:
 
-            text = re.sub(r'<.*?>', ' ', article)
-            text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'<.*?>', ' ', article)
+    text = re.sub(r'\s+', ' ', text)
 
-            # タイトル取得
-            title_match = re.search(
-                r'title=\"([^\"]+)\"',
-                article
-            )
+    # タイトル取得
+    title_match = re.search(
+        r'title=\"([^\"]+)\"',
+        article
+    )
 
-            title = title_match.group(1) if title_match else ""
+    title = title_match.group(1) if title_match else ""
 
-            # URL取得
-            url_match = re.search(
-                r'href=\"([^\"]+)\"',
-                article
-            )
+    # URL取得
+    url_match = re.search(
+        r'href=\"([^\"]+)\"',
+        article
+    )
 
-            url = url_match.group(1) if url_match else ""
+    url = url_match.group(1) if url_match else ""
 
-            if url.startswith("/"):
-                url = "https://finance.logmi.jp" + url
+    if url.startswith("/"):
+        url = "https://finance.logmi.jp" + url
 
-            # 日付取得
-            date_match = re.search(
-                r'(\d{4}/\d{1,2}/\d{1,2})',
-                text
-            )
+    # 日付取得
+    date_match = re.search(
+        r'(\d{4}/\d{1,2}/\d{1,2})',
+        text
+    )
 
-            if date_match:
+    if date_match:
 
-                date_str = date_match.group(1)
+        date_str = date_match.group(1)
 
-                dt = datetime.strptime(
-                    date_str,
-                    "%Y/%m/%d"
-                )
+        dt = datetime.strptime(
+            date_str,
+            "%Y/%m/%d"
+        )
 
-                month = dt.strftime("%Y-%m")
+        month = dt.strftime("%Y-%m")
 
-            else:
+    else:
 
-                date_str = ""
-                month = ""
+        date_str = ""
+        month = ""
 
-            # 証券コード取得
-            code_match = re.search(
-                r'\((\d{4})\)',
-                text
-            )
+    # 証券コード取得
+    code_match = re.search(
+        r'\((\d{4})\)',
+        text
+    )
 
-            code = code_match.group(1) if code_match else ""
+    code = code_match.group(1) if code_match else ""
 
-            # 社名取得
-company = ""
+    # 社名取得
+    company = ""
 
-if "、" in title:
-    company = title.split("、")[0].strip()
+    if "、" in title:
+        company = title.split("、")[0].strip()
 
-            # データ追加
-            all_data.append({
-                "掲載日": date_str,
-                "月": month,
-                "社名": company,
-                "証券コード": code,
-                "タイトル": title,
-                "URL": url
-            })
+    # データ追加
+    all_data.append({
+        "掲載日": date_str,
+        "月": month,
+        "社名": company,
+        "証券コード": code,
+        "タイトル": title,
+        "URL": url
+    })
 
 # =========================
 # DataFrame
