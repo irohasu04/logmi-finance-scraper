@@ -21,4 +21,7 @@ jobs:
 
       - run: playwright install chromium
 
-      - run: python scraper.py
+      - name: Run scraper
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        run: python scraper.py
